@@ -1,0 +1,379 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+  transition:.3s;
+}
+
+/* THEME */
+body{
+  --border:rgba(255,255,255,.2);
+  --text:white;
+  background:linear-gradient(-45deg,#4c0080,#8a2be2,#9b30ff,#5e17eb);
+  background-size:400% 400%;
+  animation:bgMove 8s infinite;
+  color:var(--text);
+}
+
+body.light{
+  background:linear-gradient(120deg,#ffffff,#e5daff);
+  --text:#2b0052;
+  --border:rgba(0,0,0,.2);
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* NAVBAR */
+.navbar{
+  width:100%;
+  padding:12px 35px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-left{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+/* Toggle Switch */
+.switch{
+  position:relative;
+  display:inline-block;
+  width:50px;
+  height:22px;
+}
+.switch input{display:none;}
+.slider{
+  position:absolute;
+  inset:0;
+  border-radius:30px;
+  background:purple;
+}
+.slider:before{
+  content:"";
+  position:absolute;
+  width:18px;
+  height:18px;
+  left:3px;
+  top:2px;
+  background:white;
+  border-radius:50%;
+}
+input:checked + .slider:before{
+  transform:translateX(26px);
+}
+
+.toggle-container{
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+/* HERO LANDING */
+.hero-animated{
+  text-align:center;
+  padding:45px 10px;   /* reduced */
+}
+
+.glowText{
+  font-size:3.2rem;
+  letter-spacing:2px;
+  animation:glow 2s infinite alternate;
+}
+@keyframes glow{
+  from{text-shadow:0 0 10px white}
+  to{text-shadow:0 0 25px white}
+}
+
+.heroSub{
+  opacity:.9;
+  margin-top:6px;
+  animation:fadeUp 1s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(20px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* CARD */
+.container{
+  display:flex;
+  justify-content:center;
+  margin-top:-10px;  /* Pulls form slightly upward */
+}
+
+.card{
+  width:420px;
+  background:rgba(255,255,255,.12);
+  border-radius:25px;
+  padding:25px;
+  backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  animation:float 4s infinite alternate ease-in-out;
+  margin-bottom:25px;   /* reduced space below form */
+}
+
+@keyframes float{
+  from{transform:translateY(0)}
+  to{transform:translateY(-10px)}
+}
+
+/* Inputs */
+.input-group{
+  margin-bottom:16px;
+}
+.input-group input{
+  width:100%;
+  padding:10px;
+  border-radius:8px;
+  border:0;
+  background:rgba(255,255,255,.25);
+  color:white;
+}
+input:focus{
+  box-shadow:0 0 15px white;
+}
+
+/* Time Input Group */
+.time-input-group{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.time-input-group input{
+  flex:1;
+  width:auto;
+}
+.time-input-group select{
+  padding:10px;
+  border-radius:8px;
+  border:0;
+  background:rgba(255,255,255,.25);
+  color:white;
+  min-width:70px;
+}
+.time-input-group select:focus{
+  box-shadow:0 0 15px white;
+}
+
+/* Button */
+button{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:0;
+  cursor:pointer;
+  font-weight:bold;
+  background:white;
+  color:purple;
+}
+button:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 20px white;
+}
+
+/* Result */
+#resultBox{
+  margin-top:10px;
+  padding:10px;
+  border-radius:10px;
+}
+.hidden{display:none}
+
+/* Dashboard */
+.dashboard{
+  text-align:center;
+  padding:28px;       /* reduced */
+  margin-top:5px;      /* reduced */
+}
+
+.stats-row{
+  display:flex;
+  justify-content:center;
+  gap:16px;
+  margin-bottom:18px;
+}
+
+.stat-box{
+  width:190px;
+  padding:18px;
+  border-radius:15px;
+  background:rgba(255,255,255,.2);
+  border:1px solid var(--border);
+  animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.05)}
+  100%{transform:scale(1)}
+}
+
+#fraudChart{
+  width:250px !important;
+  height:250px !important;
+  margin:0 auto;
+}
+
+/* MAP SECTION — SPACING FIXED HERE */
+.map-section{
+  margin-top:15px;     /* was 50px */
+  padding:25px;        /* was 40px */
+  text-align:center;
+}
+
+#fraudMap{
+  height:420px;
+  border-radius:20px;
+  border:2px solid white;
+}
+
+.threat-map-link{
+  margin-top:20px;
+  text-align:center;
+}
+
+.threat-map-link a{
+  display:inline-block;
+  background:white;
+  color:purple;
+  padding:15px 30px;
+  border-radius:15px;
+  border:2px solid purple;
+  text-decoration:none;
+  font-weight:bold;
+  font-size:1.1rem;
+  transition: all 0.3s ease;
+}
+
+.threat-map-link a:hover{
+  background:purple;
+  color:white;
+  transform:scale(1.05);
+  box-shadow:0 0 20px rgba(128,0,128,0.5);
+}
+
+/* FRAUD REPORT */
+.fraud-report{
+  margin-top:15px;
+  padding:25px;
+  text-align:center;
+}
+
+.report-container{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:40px;
+  flex-wrap:wrap;
+}
+
+.percentage-display{
+  text-align:center;
+}
+
+.percentage-circle{
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:linear-gradient(45deg, #ff0000, #ff6666);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto 10px;
+  box-shadow:0 0 30px rgba(255,0,0,0.5);
+  animation:glowPulse 2s infinite alternate;
+}
+
+@keyframes glowPulse{
+  from{box-shadow:0 0 30px rgba(255,0,0,0.5)}
+  to{box-shadow:0 0 50px rgba(255,0,0,0.8)}
+}
+
+#fraudPercentage{
+  font-size:2rem;
+  font-weight:bold;
+  color:white;
+  text-shadow:0 0 10px white;
+}
+
+.chart-container{
+  width:300px;
+  height:300px;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:14px;
+  margin-top:10px;
+}
+
+/* LOGIN INTEGRATION */
+.nav-right{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+#loginBtn{
+  padding:8px 16px;
+  border-radius:8px;
+  border:0;
+  background:white;
+  color:purple;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+#loginBtn:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 10px white;
+}
+
+.user-info{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  background:rgba(255,255,255,.2);
+  padding:8px 12px;
+  border-radius:20px;
+  border:1px solid var(--border);
+}
+
+#userBadge{
+  color:white;
+  font-weight:500;
+}
+
+.user-info button{
+  padding:4px 8px;
+  border-radius:6px;
+  border:0;
+  background:red;
+  color:white;
+  cursor:pointer;
+  font-size:12px;
+}
+
+.user-info button:hover{
+  background:darkred;
+}
+
+.hidden{display:none}

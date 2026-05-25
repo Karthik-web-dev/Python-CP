@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI DETECTION BASED SOFTWARE - Login</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --secondary: #64748b;
+      --dark: #0f172a;
+      --light: #f8fafc;
+      --accent: #06b6d4;
+      --shadow: rgba(0, 0, 0, 0.1);
+      --border-radius: 8px;
+      --transition: all 0.3s ease;
+      --nav-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: #ffffff;
+      --input-bg: #f1f5f9;
+      --text-main: #0f172a;
+    }
+
+    /* Dark Mode Variables */
+    body.dark-mode {
+      --light: #0f172a;
+      --dark: #f8fafc;
+      --nav-bg: rgba(15, 23, 42, 0.95);
+      --card-bg: #1e293b;
+      --input-bg: #334155;
+      --shadow: rgba(0, 0, 0, 0.4);
+      --text-main: #f8fafc;
+      --secondary: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", sans-serif;
+    }
+
+    body {
+      background: #f0d802;
+      background: linear-gradient(95deg,
+          rgba(240, 216, 2, 1) 0%,
+          rgba(87, 199, 133, 1) 35%,
+          rgba(42, 123, 155, 1) 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: var(--text-main);
+      transition: background 1s ease;
+    }
+
+    body.gradient-shift {
+      background: linear-gradient(95deg,
+          rgba(42, 123, 155, 1) 0%,
+          rgba(87, 199, 133, 1) 35%,
+          rgba(240, 216, 2, 1) 100%);
+    }
+
+    header {
+      background: var(--nav-bg);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 10px var(--shadow);
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .theme-toggle {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .theme-toggle:hover {
+      color: var(--accent);
+    }
+
+    .back-home {
+      text-decoration: none;
+      color: var(--accent);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .back-home:hover {
+      opacity: 0.8;
+    }
+
+    .page-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 100px 20px 40px;
+    }
+
+    .container {
+      position: relative;
+      width: 850px;
+      height: 550px;
+      background: var(--card-bg);
+      border-radius: 30px;
+      box-shadow: 0 10px 30px var(--shadow);
+      overflow: hidden;
+      border: 1px solid rgba(226, 232, 240, 0.2);
+    }
+
+    .form-box {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      background: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      transition: 0.6s ease-in-out;
+      text-align: center;
+    }
+
+    .form-box.login {
+      left: 50%;
+      opacity: 1;
+      z-index: 2;
+    }
+
+    .form-box.register {
+      left: 100%;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .container.active .form-box.login {
+      left: -100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .container.active .form-box.register {
+      left: 0;
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 2;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+
+    .input-box {
+      position: relative;
+      width: 100%;
+      margin: 15px 0;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 12px 45px 12px 15px;
+      background: var(--input-bg);
+      border: 1px solid rgba(226, 232, 240, 0.3);
+      border-radius: var(--border-radius);
+      outline: none;
+      font-size: 1rem;
+      color: var(--text-main);
+      transition: var(--transition);
+    }
+
+    .input-box i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--secondary);
+      font-size: 1.2rem;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      padding: 0.875rem;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: var(--transition);
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    .social-icons a {
+      display: inline-flex;
+      padding: 10px;
+      border: 1px solid rgba(226, 232, 240, 0.3);
+      border-radius: var(--border-radius);
+      font-size: 1.5rem;
+      color: var(--primary);
+      margin: 10px 8px;
+      transition: 0.3s;
+    }
+
+    .toggle-box::before {
+      content: "";
+      position: absolute;
+      left: -250%;
+      width: 300%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      border-radius: 150px;
+      z-index: 2;
+      transition: 1.8s ease-in-out;
+    }
+
+    .container.active .toggle-box::before {
+      left: 50%;
+    }
+
+    .toggle-panel {
+      position: absolute;
+      width: 50%;
+      height: 100%;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 2;
+      transition: 0.6s ease-in-out;
+      padding: 0 30px;
+      text-align: center;
+    }
+
+    .toggle-panel h1 {
+      color: #fff;
+    }
+
+    .toggle-left {
+      left: 0;
+    }
+
+    .toggle-right {
+      right: 100%;
+    }
+
+    .container.active .toggle-left {
+      left: -50%;
+    }
+
+    .container.active .toggle-right {
+      right: 0;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 2px solid white;
+      width: 160px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        height: auto;
+        min-height: 550px;
+      }
+
+      .toggle-box {
+        display: none;
+      }
+
+      .form-box {
+        width: 100%;
+        position: relative;
+        left: 0 !important;
+        opacity: 1 !important;
+      }
+
+      .form-box.register {
+        display: none;
+      }
+
+      .container.active .form-box.login {
+        display: none;
+      }
+
+      .container.active .form-box.register {
+        display: flex;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="asep.html" class="logo"> AI BASED FRAUD DETECTION SOFTWARE </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" title="Toggle Dark Mode">
+          <i class="fas fa-moon"></i>
+        </button>
+        <a href="{{url_for('check_fraud')}}" class="back-home">
+          <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <div class="page-wrapper">
+    <div class="container">
+      <div class="form-box login">
+        <form id="loginForm" novalidate>
+          <h1>Login to Portal</h1>
+          <div class="input-box">
+            <input type="email" id="loginUser" placeholder="Email Address" />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" id="loginPass" placeholder="Password" />
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+          <button type="submit" class="btn">Login</button>
+          <p style="margin: 20px 0; color: var(--secondary)">or login with</p>
+          <div class="social-icons">
+            <a href="#"><i class="bx bxl-google"></i> </a>
+            <a href="#"><i class="bx bxl-meta"></i></a>
+          </div>
+        </form>
+      </div>
+
+      <div class="form-box register">
+        <form id="registerForm" novalidate>
+          <h1>Create Account</h1>
+          <div class="input-box">
+            <input type="text" id="regName" placeholder="Full Name" />
+            <i class="bx bxs-user"></i>
+          </div>
+          <div class="input-box">
+            <input type="email" id="regEmail" placeholder="Email Address" />
+            <i class="bx bxs-envelope"></i>
+          </div>
+          <div class="input-box">
+            <input type="password" id="regPass" placeholder="Password" />
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+          <button type="submit" class="btn">Register</button>
+          <p style="margin: 20px 0; color: var(--secondary)">
+            or register with
+          </p>
+          <div class="social-icons">
+            <a href="#"><i class="bx bxl-google"></i> </a>
+            <a href="#"><i class="bx bxl-meta"></i></a>
+          </div>
+        </form>
+      </div>
+
+      <div class="toggle-box">
+        <div class="toggle-panel toggle-left">
+          <h1>New Here?</h1>
+          <p>Register today to apply for services online.</p>
+          <button class="btn btn-outline register-btn">Create Account</button>
+        </div>
+        <div class="toggle-panel toggle-right">
+          <h1>Welcome Back!</h1>
+          <p>Already have an account? Sign in here.</p>
+          <button class="btn btn-outline login-btn">Login</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Elements
+    const container = document.querySelector(".container");
+    const registerbtn = document.querySelector(".register-btn");
+    const loginbtn = document.querySelector(".login-btn");
+    const themeToggle = document.getElementById("themeToggle");
+    const body = document.body;
+
+    // Toggle Login/Register
+    registerbtn.addEventListener("click", () => {
+      container.classList.add("active");
+      body.classList.add("gradient-shift");
+    });
+    loginbtn.addEventListener("click", () => {
+      container.classList.remove("active");
+      body.classList.remove("gradient-shift");
+    });
+
+    // Dark Mode Toggle
+    themeToggle.addEventListener("click", () => {
+      body.classList.toggle("dark-mode");
+      const icon = themeToggle.querySelector("i");
+      if (body.classList.contains("dark-mode")) {
+        icon.classList.replace("fa-moon", "fa-sun");
+      } else {
+        icon.classList.replace("fa-sun", "fa-moon");
+      }
+    });
+
+    // Pure JS Validation
+    const loginForm = document.getElementById("loginForm");
+    const registerForm = document.getElementById("registerForm");
+
+    const isValidEmail = (email) =>
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.toLowerCase());
+
+    loginForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const user = document.getElementById("loginUser").value.trim();
+      const pass = document.getElementById("loginPass").value.trim();
+
+      if (!user || !pass) return alert("Error: All fields are required.");
+
+      // Allow login with any password as long as email is provided
+      const userData = {
+        name: user.split("@")[0],
+        email: user,
+        password: pass,
+      };
+      localStorage.setItem("user", JSON.stringify(userData));
+      alert("Success: Logged in successfully!");
+      window.location.href = "asep.html";
+    });
+
+    registerForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("regName").value.trim();
+      const email = document.getElementById("regEmail").value.trim();
+      const pass = document.getElementById("regPass").value.trim();
+
+      if (!name || !email || !pass)
+        return alert("Error: All fields are required.");
+      if (!isValidEmail(email)) return alert("Error: Invalid email format.");
+
+      const user = {name, email, password: pass};
+      localStorage.setItem("user", JSON.stringify(user));
+      alert("Success: Account created!");
+      window.location.href = "asep.html";
+    });
+  </script>
+</body>
+
+</html>

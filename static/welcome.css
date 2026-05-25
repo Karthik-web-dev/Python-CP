@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Poppins",sans-serif;
+  transition:.3s;
+}
+
+/* THEME */
+body{
+  --border:rgba(255,255,255,.2);
+  --text:white;
+  background:linear-gradient(-45deg,#4c0080,#8a2be2,#9b30ff,#5e17eb);
+  background-size:400% 400%;
+  animation:bgMove 8s infinite;
+  color:var(--text);
+  overflow:hidden;
+}
+
+body.light{
+  background:linear-gradient(120deg,#ffffff,#e5daff);
+  --text:#2b0052;
+  --border:rgba(0,0,0,.2);
+}
+
+@keyframes bgMove{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* WELCOME CONTAINER */
+.welcome-container{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:40px;
+  position:relative;
+  animation:slideIn 1s ease-out;
+}
+
+@keyframes slideIn{
+  from{opacity:0; transform:translateY(50px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* WELCOME HERO */
+.welcome-hero{
+  text-align:center;
+  margin-bottom:40px;
+}
+
+.welcome-title{
+  font-size:4rem;
+  font-weight:700;
+  letter-spacing:3px;
+  animation:glow 2s infinite alternate;
+  margin-bottom:20px;
+  background:linear-gradient(45deg, #fff, #ff6b6b, #4ecdc4, #45b7d1);
+  background-size:400% 400%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:glow 2s infinite alternate, gradientShift 4s infinite;
+}
+
+@keyframes gradientShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+@keyframes glow{
+  from{text-shadow:0 0 20px rgba(255,255,255,0.5)}
+  to{text-shadow:0 0 40px rgba(255,255,255,0.8), 0 0 60px rgba(255,107,107,0.5)}
+}
+
+.welcome-subtitle{
+  font-size:1.5rem;
+  font-weight:300;
+  opacity:0.9;
+  animation:fadeUp 1.5s ease;
+}
+
+@keyframes fadeUp{
+  from{opacity:0; transform:translateY(30px)}
+  to{opacity:1; transform:translateY(0)}
+}
+
+/* PROJECT EXPLANATION */
+.project-explanation{
+  max-width:600px;
+  text-align:center;
+  margin-bottom:60px;
+}
+
+.explanation-text{
+  font-size:1.1rem;
+  line-height:1.6;
+  opacity:0.8;
+  animation:fadeUp 2s ease;
+}
+
+/* CTA SECTION */
+.cta-section{
+  animation:fadeUp 2.5s ease;
+}
+
+.get-started-btn{
+  position:relative;
+  padding:20px 40px;
+  font-size:1.2rem;
+  font-weight:700;
+  letter-spacing:2px;
+  background:linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  color:white;
+  border:none;
+  border-radius:50px;
+  cursor:pointer;
+  overflow:hidden;
+  box-shadow:0 8px 32px rgba(255,107,107,0.3);
+  transition:all 0.3s ease;
+}
+
+.get-started-btn:hover{
+  transform:scale(1.05);
+  box-shadow:0 12px 40px rgba(255,107,107,0.5);
+  animation:btnGlow 1.5s infinite alternate;
+}
+
+.get-started-btn:active{
+  transform:scale(0.98);
+}
+
+@keyframes btnGlow{
+  from{box-shadow:0 12px 40px rgb(243, 239, 0)}
+  to{box-shadow:0 12px 40px rgba(227, 10, 10, 0.8), 0 0 60px rgb(0, 251, 234)}
+}
+
+.btn-arrow{
+  margin-left:10px;
+  transition:transform 0.3s ease;
+}
+
+.get-started-btn:hover .btn-arrow{
+  transform:translateX(5px);
+}
+
+/* SLIDE OUT ANIMATION */
+.welcome-container.slide-out{
+  animation:slideOutLeft 0.8s ease-in-out forwards;
+}
+
+@keyframes slideOutLeft{
+  0%{transform:translateX(0); opacity:1}
+  100%{transform:translateX(-100vw); opacity:0}
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width:768px){
+  .welcome-title{
+    font-size:3rem;
+  }
+
+  .welcome-subtitle{
+    font-size:1.2rem;
+  }
+
+  .explanation-text{
+    font-size:1rem;
+  }
+
+  .get-started-btn{
+    padding:18px 35px;
+    font-size:1.1rem;
+  }
+
+  .welcome-container{
+    padding:20px;
+  }
+}

@@ -1,0 +1,456 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Credit Card Validator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <style>
+        :root {
+            --bg-dark: linear-gradient(-45deg, #4c0080, #8a2be2, #9b30ff, #5e17eb);
+            --bg-light: linear-gradient(120deg, #ffffff, #e5daff);
+            --text-dark: white;
+            --text-light: #2b0052;
+            --border-dark: rgba(255, 255, 255, 0.2);
+            --border-light: rgba(0, 0, 0, 0.2);
+            --card-bg: rgba(255, 255, 255, 0.15);
+            --button-bg: white;
+            --button-color: #4c0080;
+            --shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: var(--bg-dark);
+            background-size: 400% 400%;
+            animation: bgMove 8s infinite;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            background: var(--bg-light);
+            color: var(--text-light);
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-dark);
+            z-index: 1000;
+            padding: 1rem 0;
+        }
+
+        body.light-mode .navbar {
+            background: rgba(255, 255, 255, 0.25);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 0 15px white;
+            margin: 0;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        body.light-mode .nav-title {
+            text-shadow: 0 0 15px #4c0080;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            width: 50px;
+            height: 24px;
+            border-radius: 12px;
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #4c0080;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .toggle-slider {
+            background: white;
+            transform: translateX(26px);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 4rem 1rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 0 0 20px white;
+            margin-bottom: 1rem;
+            animation: glow-dark 2s ease-in-out infinite alternate;
+        }
+
+        body.light-mode .hero-title {
+            text-shadow: 0 0 20px #4c0080;
+            animation: glow-light 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow-dark {
+            from {
+                text-shadow: 0 0 10px white;
+            }
+
+            to {
+                text-shadow: 0 0 25px white;
+            }
+        }
+
+        @keyframes glow-light {
+            from {
+                text-shadow: 0 0 10px #4c0080;
+            }
+
+            to {
+                text-shadow: 0 0 25px #4c0080;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            font-weight: 300;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 1rem;
+        }
+
+        .card-form {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: float 3s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        body.light-mode .card-form {
+            background: rgba(255, 255, 255, 0.25);
+            border: 1px solid var(--border-light);
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        #card-number {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid var(--border-dark);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-dark);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode #card-number {
+            background: rgba(255, 255, 255, 0.8);
+            color: var(--text-light);
+            border: 1px solid var(--border-light);
+        }
+
+        #card-number:focus {
+            outline: none;
+            box-shadow: 0 0 15px white;
+        }
+
+        body.light-mode #card-number:focus {
+            box-shadow: 0 0 15px #4c0080;
+        }
+
+        .validate-btn {
+            width: 100%;
+            padding: 1rem;
+            background: white;
+            color: #4c0080;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .validate-btn:hover {
+            box-shadow: 0 0 20px white;
+            transform: scale(1.04);
+        }
+
+        body.light-mode .validate-btn:hover {
+            box-shadow: 0 0 20px #4c0080;
+        }
+
+        .result-box {
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .result-box.valid {
+            background: rgba(0, 255, 0, 0.2);
+            color: #00ff00;
+            opacity: 1;
+        }
+
+        .result-box.invalid {
+            background: rgba(255, 0, 0, 0.2);
+            color: #ff0000;
+            opacity: 1;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1rem;
+            }
+
+            .card-form {
+                padding: 1.5rem;
+                max-width: 90vw;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <button class="back-btn" onclick="window.location.href='{{url_for('check_fraud')}}'">
+                Back to Home
+            </button>
+            <h1 class="nav-title">Credit Card Validator</h1>
+            <button id="theme-toggle" class="theme-toggle">
+                <span class="toggle-slider">🌙</span>
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <h1 class="hero-title">Validate Your Card</h1>
+        <p class="hero-subtitle">
+            The Luhn algorithm, also known as the modulus 10 or mod 10 algorithm, is
+            a simple checksum formula used to validate a variety of identification
+            numbers, such as credit card numbers. It works by doubling every second
+            digit from the right, subtracting 9 if the result is greater than 9,
+            summing all digits, and checking if the total is divisible by 10.
+        </p>
+    </section>
+
+    <main class="main-content">
+        <div class="card-form">
+            <input type="text" id="card-number" placeholder="Enter credit card number" maxlength="19"
+                aria-label="Credit card number input" />
+            <button id="validate-btn" class="validate-btn" aria-label="Validate credit card">
+                Validate
+            </button>
+            <div id="result" class="result-box" aria-live="polite"></div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; Made by Krishna Agrawal and team.</p>
+    </footer>
+
+    <script>
+        const cardNumberInput = document.getElementById("card-number");
+        const validateBtn = document.getElementById("validate-btn");
+        const resultBox = document.getElementById("result");
+        const themeToggle = document.getElementById("theme-toggle");
+
+        // Theme toggle
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+            const slider = document.querySelector(".toggle-slider");
+            if (document.body.classList.contains("light-mode")) {
+                slider.style.transform = "translateX(26px)";
+                slider.textContent = "☀️";
+            } else {
+                slider.style.transform = "translateX(0)";
+                slider.textContent = "🌙";
+            }
+        });
+
+        // Format card number with spaces
+        function formatCardNumber(value) {
+            return value
+                .replace(/\s+/g, "")
+                .replace(/(\d{4})/g, "$1 ")
+                .trim();
+        }
+
+        // Detect card brand
+        function detectCardBrand(number) {
+            const num = number.replace(/\s+/g, "");
+            if (/^4/.test(num)) return "Visa";
+            if (/^5[1-5]/.test(num) || /^2[2-7]/.test(num)) return "Mastercard";
+            if (/^3[47]/.test(num)) return "American Express";
+            return "Unknown";
+        }
+
+        // Luhn algorithm
+        function luhnCheck(cardNumber) {
+            const num = cardNumber.replace(/\s+/g, "");
+            if (!/^\d+$/.test(num))
+                return {isValid: false, details: "Invalid characters"};
+
+            let sum = 0;
+            let shouldDouble = false;
+            for (let i = num.length - 1; i >= 0; i--) {
+                let digit = parseInt(num.charAt(i), 10);
+                if (shouldDouble) {
+                    digit *= 2;
+                    if (digit > 9) digit -= 9;
+                }
+                sum += digit;
+                shouldDouble = !shouldDouble;
+            }
+            const isValid = sum % 10 === 0;
+            const brand = detectCardBrand(num);
+            const details = isValid
+                ? `Card passes Luhn check ✓ (${brand})`
+                : `Card fails Luhn check ✗ (${brand})`;
+            return {isValid, details};
+        }
+
+        // Validate and display result
+        function validateCard() {
+            const value = cardNumberInput.value;
+            if (value.length < 13) {
+                resultBox.textContent = "Enter at least 13 digits";
+                resultBox.className = "result-box invalid";
+                return;
+            }
+            const result = luhnCheck(value);
+            resultBox.textContent = result.details;
+            resultBox.className = `result-box ${result.isValid ? "valid" : "invalid"}`;
+        }
+
+        // Real-time formatting and validation
+        cardNumberInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "");
+            value = formatCardNumber(value);
+            e.target.value = value;
+            if (value.replace(/\s+/g, "").length >= 13) {
+                validateCard();
+            } else {
+                resultBox.className = "result-box";
+                resultBox.textContent = "";
+            }
+        });
+
+        // Button click validation
+        validateBtn.addEventListener("click", validateCard);
+
+        // Keyboard navigation
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && document.activeElement === cardNumberInput) {
+                validateCard();
+            }
+        });
+    </script>
+</body>
+
+</html>

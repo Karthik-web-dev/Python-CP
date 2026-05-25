@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>AI Fraud Detection System</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='asep.css') }}" />
+
+  <!-- ChartJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <!-- Heatmap Plugin -->
+  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+</head>
+
+<body>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <h2>AI Fraud Detection</h2>
+    <div class="nav-right">
+      <button onclick="window.location.href = '{{url_for('tracker')}}'" style="
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 0;
+            background: white;
+            color: purple;
+            cursor: pointer;
+            font-weight: bold;
+          ">
+        Track Phone Number
+      </button>
+      <button onclick="window.location.href = '{{url_for('checkCreditCard')}}'" style="
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 0;
+            background: white;
+            color: purple;
+            cursor: pointer;
+            font-weight: bold;
+          ">
+        Check Fraud Credit Card
+      </button>
+      <button id="loginBtn" onclick="window.location.href = '{{url_for('login')}}'">
+        Login
+      </button>
+      <div id="userInfo" class="user-info hidden">
+        <span id="userBadge">Welcome, <span id="username"></span></span>
+        <button onclick="logout()">Logout</button>
+      </div>
+      <div class="toggle-container">
+        <span>🌙</span>
+        <label class="switch">
+          <input type="checkbox" onclick="toggleTheme()" />
+          <span class="slider"></span>
+        </label>
+        <span>☀️</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO ANIMATION -->
+  <section class="hero-animated">
+    <h1 class="glowText">Detect. Prevent. Secure.</h1>
+    <p class="heroSub">
+      Next-Gen AI protecting transactions across the world
+    </p>
+  </section>
+
+  <!-- FORM CARD -->
+  <form action="/checkFraud" method="POST" class="container" onsubmit="return checkFraud(event);">
+    <div class="card">
+      <h2>Enter Transaction Details</h2>
+
+      <div class="input-group">
+        <label>Transaction Amount (₹)</label>
+        <input id="amount" type="number" name="amount" placeholder="Enter amount" />
+      </div>
+
+      <div class="input-group">
+        <label>Transaction Date</label>
+        <input id="date" type="date" name="date" placeholder="Select date" />
+      </div>
+
+      <div class="input-group">
+        <label>Time Slot (Exact Time)</label>
+        <div class="time-input-group">
+          <input id="hours" type="number" min="1" max="12" name="hours" placeholder="Hours (1-12)" />
+          <input id="minutes" type="number" min="0" max="59" name="minutes" placeholder="Minutes (0-59)" />
+          <input id="seconds" type="number" min="0" max="59" name="seconds" placeholder="Seconds (0-59)" />
+          <select id="ampm" name="ampm">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-group">
+        <label>Transaction Frequency</label>
+        <input id="frequency" type="number" name="frequency" placeholder="Number of recent transactions" />
+      </div>
+
+      <div class="input-group">
+        <label>Location (City)</label>
+        <input id="location" type="text" name="location" placeholder="Enter your city" />
+      </div>
+
+      <button type="submit">Check Fraud</button>
+
+      <!-- RESULT BOX — always in DOM, hidden by default -->
+      <div id="resultBox" class="hidden" style="padding: 20px; border-radius: 12px; margin-top: 16px">
+        <h3>Result</h3>
+        <span id="result"></span>
+        <p id="fraudProbText"></p>
+        <p id="cityText"></p>
+
+        <!-- Fraud probability pie chart -->
+        <div style="max-width: 260px; margin: 16px auto 0">
+          <canvas id="fraudReportChart"></canvas>
+          <p id="fraudPercentage" style="
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-top: 8px;
+              "></p>
+        </div>
+      </div>
+
+      {% if result %}
+      <script>
+        /* Pre-fill result box from server-side render (non-JS fallback) */
+        window._serverResult = {
+          result: "{{ result }}",
+          city: "{{ city | default('') }}",
+          fraud_probability: {{fraud_probability | default (0)}}
+            };
+      </script>
+      {% endif %}
+    </div>
+  </form>
+
+  <!-- DASHBOARD -->
+  <section class="dashboard">
+    <h2>Fraud Detection Analytics</h2>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <h3>Total Transactions</h3>
+        <p id="totalCount">0</p>
+      </div>
+      <div class="stat-box">
+        <h3>Fraud Detected</h3>
+        <p id="fraudCount">0</p>
+      </div>
+      <div class="stat-box">
+        <h3>Genuine</h3>
+        <p id="genuineCount">0</p>
+      </div>
+    </div>
+
+    <!-- Doughnut chart for overall stats -->
+    <div style="max-width: 400px; margin: 0 auto">
+      <canvas id="fraudChart"></canvas>
+    </div>
+  </section>
+
+  <!-- GEO FRAUD HEATMAP -->
+  <section class="map-section">
+    <h2>🌍 Global Fraud Heatmap</h2>
+    <p>
+      (We randomly generate live coordinates for demo — realistic for
+      presentation)
+    </p>
+    <div id="fraudMap" style="height: 450px; width: 100%; border-radius: 12px"></div>
+    <div class="threat-map-link">
+      <a href="https://threatmap.checkpoint.com/" target="_blank">To view live threat map, click here!!</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>ASEP College Project | AI Fraud Detection</p>
+  </footer>
+
+  <!-- Global state from Python — always defined -->
+  <script>
+    window.fraud_count = {{fraud_count | default (0)}};
+    window.genuine_count = {{genuine_count | default (0)}};
+    window.fraud_probability = {{fraud_probability | default (0)}};
+    window.result = "{{ result            | default('') }}";
+    window.city = "{{ city              | default('') }}";
+  </script>
+
+  <script src="{{ url_for('static', filename='asep.js') }}"></script>
+</body>
+
+</html>

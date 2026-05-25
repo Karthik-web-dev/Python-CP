@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phone Demo Locator</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        :root {
+            --border: rgba(255, 255, 255, 0.2);
+            --text: white;
+            --bg-light: linear-gradient(120deg, #ffffff, #e5daff);
+            --text-light: #2b0052;
+            --border-light: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+
+        body {
+            background: linear-gradient(-45deg, #4c0080, #8a2be2, #9b30ff, #5e17eb);
+            background-size: 400% 400%;
+            animation: bgMove 8s infinite;
+            color: var(--text);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode {
+            background: var(--bg-light);
+            color: var(--text-light);
+            --border: var(--border-light);
+        }
+
+        @keyframes bgMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .navbar {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .navbar h1 {
+            text-shadow: 0 0 20px white;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px white;
+            }
+
+            to {
+                text-shadow: 0 0 25px white;
+            }
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-label {
+            margin-right: 10px;
+            font-weight: 500;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch::before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: #8a2be2;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::before {
+            transform: translateX(26px);
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 80px);
+        }
+
+        .left-panel {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .input-group {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            box-shadow: 0 0 15px white;
+        }
+
+        .input-group button {
+            width: 100%;
+            padding: 0.75rem;
+            background: white;
+            color: #8a2be2;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group button:hover {
+            box-shadow: 0 0 20px white;
+            transform: scale(1.04);
+        }
+
+        .input-group button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .map-container {
+            flex: 2;
+            position: relative;
+        }
+
+        #map {
+            height: 100%;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+        }
+
+        .right-panel {
+            flex: 1;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid var(--border);
+            overflow-y: auto;
+        }
+
+        .panel-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
+
+        .panel-card h3 {
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 15px white;
+        }
+
+        .panel-card p {
+            margin-bottom: 0.25rem;
+        }
+
+        .history {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .right-panel {
+                border-left: none;
+                border-top: 1px solid var(--border);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <button class="back-btn" onclick="window.location.href='{{url_for('check_fraud')}}'">
+            Back to Home
+        </button>
+        <h1>Phone Demo Locator</h1>
+        <div class="toggle-container">
+            <span class="toggle-label">Light Mode</span>
+            <div class="toggle-switch" id="theme-toggle"></div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="left-panel">
+            <div class="input-group">
+                <input type="text" id="phone-input" placeholder="Enter 10-digit mobile number" maxlength="10" />
+                <button id="track-btn">Track Now</button>
+                <button id="stop-btn" disabled>Stop Tracking</button>
+            </div>
+        </div>
+        <div class="map-container">
+            <div id="map"></div>
+        </div>
+        <div class="right-panel">
+            <div class="panel-card">
+                <h3>Tracking Info</h3>
+                <p><strong>Phone:</strong> <span id="phone-display">-</span></p>
+                <p>
+                    <strong>Last Location:</strong> <span id="location-display">-</span>
+                </p>
+                <p><strong>City:</strong> <span id="city-display">-</span></p>
+                <p><strong>Lat:</strong> <span id="lat-display">-</span></p>
+                <p><strong>Long:</strong> <span id="long-display">-</span></p>
+                <p>
+                    <strong>Timestamp:</strong> <span id="timestamp-display">-</span>
+                </p>
+            </div>
+            <div class="panel-card">
+                <h3>Tracking History</h3>
+                <div class="history" id="history-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const cities = [
+            {city: "Delhi", lat: 28.7041, long: 77.1025},
+            {city: "Mumbai", lat: 19.076, long: 72.8777},
+            {city: "Pune", lat: 18.5204, long: 73.8567},
+            {city: "Jaipur", lat: 26.9124, long: 75.7873},
+            {city: "Indore", lat: 22.7196, long: 75.8577},
+            {city: "Ranchi", lat: 23.3441, long: 85.3096},
+            {city: "Patna", lat: 25.5941, long: 85.1376},
+            {city: "Guwahati", lat: 26.1445, long: 91.7362},
+            {city: "Thane", lat: 19.2183, long: 72.9781},
+            {city: "Surat", lat: 21.1702, long: 72.8311},
+            {city: "Nagpur", lat: 21.1458, long: 79.0882},
+            {city: "Mysuru", lat: 12.2958, long: 76.6394},
+            {city: "Kochi", lat: 9.9312, long: 76.2673},
+            {city: "Aizawl", lat: 23.7271, long: 92.7176},
+            {city: "Ahmedabad", lat: 23.0225, long: 72.5714},
+            {city: "Bangalore", lat: 12.9716, long: 77.5946},
+            {city: "Chennai", lat: 13.0827, long: 80.2707},
+            {city: "Kolkata", lat: 22.5726, long: 88.3639},
+            {city: "Hyderabad", lat: 17.385, long: 78.4867},
+            {city: "Lucknow", lat: 26.8467, long: 80.9462},
+            {city: "Kanpur", lat: 26.4499, long: 80.3319},
+            {city: "Nagpur", lat: 21.1458, long: 79.0882},
+            {city: "Visakhapatnam", lat: 17.6868, long: 83.2185},
+            {city: "Bhopal", lat: 23.2599, long: 77.4126},
+            {city: "Coimbatore", lat: 11.0168, long: 76.9558},
+            {city: "Vadodara", lat: 22.3072, long: 73.1812},
+            {city: "Ludhiana", lat: 30.901, long: 75.8573},
+            {city: "Agra", lat: 27.1767, long: 78.0081},
+            {city: "Nashik", lat: 19.9975, long: 73.7898},
+            {city: "Faridabad", lat: 28.4089, long: 77.3178},
+            {city: "Meerut", lat: 28.9845, long: 77.7064},
+            {city: "Rajkot", lat: 22.3039, long: 70.8022},
+            {city: "Varanasi", lat: 25.3176, long: 82.9739},
+            {city: "Srinagar", lat: 34.0837, long: 74.7973},
+            {city: "Aurangabad", lat: 19.8762, long: 75.3433},
+            {city: "Dhanbad", lat: 23.7957, long: 86.4304},
+            {city: "Amritsar", lat: 31.634, long: 74.8723},
+            {city: "Navi Mumbai", lat: 19.033, long: 73.0297},
+            {city: "Allahabad", lat: 25.4358, long: 81.8463},
+            {city: "Howrah", lat: 22.5958, long: 88.2636},
+            {city: "Ranchi", lat: 23.3441, long: 85.3096},
+            {city: "Gwalior", lat: 26.2183, long: 78.1828},
+            {city: "Jabalpur", lat: 23.1815, long: 79.9864},
+            {city: "Vijayawada", lat: 16.5062, long: 80.648},
+            {city: "Jodhpur", lat: 26.2389, long: 73.0243},
+            {city: "Madurai", lat: 9.9252, long: 78.1198},
+            {city: "Raipur", lat: 21.2514, long: 81.6296},
+            {city: "Kota", lat: 25.2138, long: 75.8648},
+            {city: "Chandigarh", lat: 30.7333, long: 76.7794},
+            {city: "Guwahati", lat: 26.1445, long: 91.7362},
+            {city: "Solapur", lat: 17.6599, long: 75.9064},
+            {city: "Hubli", lat: 15.3647, long: 75.124},
+            {city: "Bareilly", lat: 28.367, long: 79.4304},
+            {city: "Moradabad", lat: 28.8386, long: 78.7733},
+            {city: "Mysore", lat: 12.2958, long: 76.6394},
+            {city: "Gurgaon", lat: 28.4595, long: 77.0266},
+            {city: "Aligarh", lat: 27.8974, long: 78.088},
+            {city: "Jalandhar", lat: 31.326, long: 75.5762},
+            {city: "Tiruchirappalli", lat: 10.7905, long: 78.7047},
+            {city: "Bhubaneswar", lat: 20.2961, long: 85.8245},
+            {city: "Salem", lat: 11.6643, long: 78.146},
+            {city: "Warangal", lat: 17.9689, long: 79.5941},
+            {city: "Guntur", lat: 16.3067, long: 80.4365},
+            {city: "Bhiwandi", lat: 19.2813, long: 73.0483},
+            {city: "Saharanpur", lat: 29.9679, long: 77.5452},
+            {city: "Gorakhpur", lat: 26.7606, long: 83.3732},
+            {city: "Bikaner", lat: 28.0229, long: 73.3119},
+            {city: "Amravati", lat: 20.9374, long: 77.7796},
+            {city: "Noida", lat: 28.5355, long: 77.391},
+            {city: "Jamshedpur", lat: 22.8046, long: 86.2029},
+            {city: "Bhilai", lat: 21.1938, long: 81.3509},
+            {city: "Cuttack", lat: 20.4625, long: 85.883},
+            {city: "Firozabad", lat: 27.1591, long: 78.3958},
+            {city: "Kochi", lat: 9.9312, long: 76.2673},
+            {city: "Nellore", lat: 14.4426, long: 79.9865},
+            {city: "Bhavnagar", lat: 21.7645, long: 72.1519},
+            {city: "Dehradun", lat: 30.3165, long: 78.0322},
+            {city: "Durgapur", lat: 23.5204, long: 87.3119},
+            {city: "Asansol", lat: 23.6739, long: 86.9524},
+            {city: "Rourkela", lat: 22.2604, long: 84.8536},
+            {city: "Nanded", lat: 19.1383, long: 77.321},
+            {city: "Kolhapur", lat: 16.705, long: 74.2433},
+            {city: "Ajmer", lat: 26.4499, long: 74.6399},
+            {city: "Akola", lat: 20.7, long: 77.0082},
+            {city: "Gulbarga", lat: 17.3297, long: 76.8343},
+            {city: "Jamnagar", lat: 22.4707, long: 70.0577},
+            {city: "Ujjain", lat: 23.1765, long: 75.7885},
+            {city: "Loni", lat: 28.7525, long: 77.288},
+            {city: "Siliguri", lat: 26.7271, long: 88.3953},
+            {city: "Jhansi", lat: 25.4484, long: 78.5685},
+            {city: "Ulhasnagar", lat: 19.2215, long: 73.1645},
+            {city: "Jammu", lat: 32.7266, long: 74.857},
+            {city: "Sangli", lat: 16.8544, long: 74.5815},
+            {city: "Mangalore", lat: 12.9141, long: 74.856},
+            {city: "Erode", lat: 11.341, long: 77.7172},
+            {city: "Belgaum", lat: 15.8497, long: 74.4977},
+            {city: "Ambattur", lat: 13.1143, long: 80.1548},
+            {city: "Tirunelveli", lat: 8.7139, long: 77.7567},
+            {city: "Malegaon", lat: 20.5537, long: 74.5288},
+            {city: "Gaya", lat: 24.7914, long: 85.0002},
+            {city: "Tiruppur", lat: 11.1085, long: 77.3411},
+            {city: "Davanagere", lat: 14.4644, long: 75.9218},
+            {city: "Kozhikode", lat: 11.2588, long: 75.7804},
+            {city: "Akola", lat: 20.7, long: 77.0082},
+            {city: "Kurnool", lat: 15.8281, long: 78.0373},
+            {city: "Rajpur Sonarpur", lat: 22.449, long: 88.3915},
+            {city: "Bokaro", lat: 23.6693, long: 86.1511},
+            {city: "South Dum Dum", lat: 22.61, long: 88.4},
+            {city: "Bellary", lat: 15.1394, long: 76.9173},
+            {city: "Patiala", lat: 30.3398, long: 76.3869},
+            {city: "Gopalpur", lat: 19.2644, long: 84.862},
+            {city: "Agartala", lat: 23.8315, long: 91.2868},
+            {city: "Bhagalpur", lat: 25.2425, long: 87.0099},
+            {city: "Muzaffarnagar", lat: 29.4727, long: 77.7085},
+            {city: "Bhatpara", lat: 22.8714, long: 88.4089},
+            {city: "Panihati", lat: 22.69, long: 88.37},
+            {city: "Latur", lat: 18.4088, long: 76.5604},
+            {city: "Dhule", lat: 20.9042, long: 74.7749},
+            {city: "Tirupati", lat: 13.6288, long: 79.4192},
+            {city: "Rohtak", lat: 28.8955, long: 76.6066},
+            {city: "Korba", lat: 22.3595, long: 82.7501},
+            {city: "Bhilwara", lat: 25.3214, long: 74.5869},
+            {city: "Berhampur", lat: 19.3149, long: 84.7941},
+            {city: "Muzaffarpur", lat: 26.1209, long: 85.3647},
+            {city: "Ahmednagar", lat: 19.0952, long: 74.7496},
+            {city: "Mathura", lat: 27.4924, long: 77.6737},
+            {city: "Kollam", lat: 8.8932, long: 76.6141},
+            {city: "Avadi", lat: 13.1143, long: 80.1098},
+            {city: "Kadapa", lat: 14.4673, long: 78.8242},
+            {city: "Kamarhati", lat: 22.6711, long: 88.3747},
+            {city: "Sambalpur", lat: 21.4669, long: 83.9812},
+            {city: "Bilaspur", lat: 22.0797, long: 82.1391},
+            {city: "Shahjahanpur", lat: 27.8815, long: 79.912},
+            {city: "Satara", lat: 17.6805, long: 73.9862},
+            {city: "Bijapur", lat: 16.8302, long: 75.71},
+            {city: "Rampur", lat: 28.7896, long: 79.025},
+            {city: "Shoreham-by-Sea", lat: 50.8357, long: -0.2727},
+        ];
+
+        const map = L.map("map").setView([20.5937, 78.9629], 5);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+            attribution: "© OpenStreetMap contributors",
+        }).addTo(map);
+
+        let marker;
+        let trackingInterval;
+        let currentPhone = "";
+
+        const themeToggle = document.getElementById("theme-toggle");
+        themeToggle.addEventListener("click", () => {
+            document.body.classList.toggle("light-mode");
+            themeToggle.classList.toggle("active");
+        });
+
+        document
+            .getElementById("track-btn")
+            .addEventListener("click", startTracking);
+
+        document
+            .getElementById("stop-btn")
+            .addEventListener("click", stopTracking);
+
+        function startTracking() {
+            const phoneInput = document.getElementById("phone-input").value;
+            if (!/^\d{10}$/.test(phoneInput)) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+            currentPhone = phoneInput;
+            document.getElementById("phone-display").textContent = phoneInput;
+            document.getElementById("track-btn").disabled = true;
+            document.getElementById("stop-btn").disabled = false;
+            updateLocation();
+            trackingInterval = setInterval(updateLocation, 3000);
+        }
+
+        function stopTracking() {
+            clearInterval(trackingInterval);
+            document.getElementById("track-btn").disabled = false;
+            document.getElementById("stop-btn").disabled = true;
+        }
+
+        function updateLocation() {
+            const randomCity = cities[Math.floor(Math.random() * cities.length)];
+            const {city, lat, long} = randomCity;
+            const timestamp = new Date().toLocaleString();
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([lat, long]).addTo(map);
+            map.panTo([lat, long], {animate: true, duration: 1});
+
+            document.getElementById("location-display").textContent =
+                `${city}, India`;
+            document.getElementById("city-display").textContent = city;
+            document.getElementById("lat-display").textContent = lat.toFixed(4);
+            document.getElementById("long-display").textContent = long.toFixed(4);
+            document.getElementById("timestamp-display").textContent = timestamp;
+
+            const historyList = document.getElementById("history-list");
+            const historyItem = document.createElement("div");
+            historyItem.className = "history-item";
+            historyItem.textContent = `${timestamp} - ${city} (${lat.toFixed(4)}, ${long.toFixed(4)})`;
+            historyList.appendChild(historyItem);
+            historyList.scrollTop = historyList.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>
